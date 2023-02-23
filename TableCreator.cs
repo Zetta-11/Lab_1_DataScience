@@ -33,8 +33,8 @@ namespace Lab_1
             dataGrid.Rows.Add("Середнє арифметичне", StatisticCharacteristics.GetAverage(list));
             dataGrid.Rows.Add("Медіана", StatisticCharacteristics.GetMedian(list));
             dataGrid.Rows.Add("Середньоквадритчне відхилення", StatisticCharacteristics.GetStandartDeviation(list));
-            dataGrid.Rows.Add("Коефіцієнт асиметрії");
-            dataGrid.Rows.Add("Коефіцієнт ексцесу");
+            dataGrid.Rows.Add("Коефіцієнт асиметрії", StatisticCharacteristics.GetSkewness(list));
+            dataGrid.Rows.Add("Коефіцієнт ексцесу", StatisticCharacteristics.GetKurtosis(list));
         }
 
 

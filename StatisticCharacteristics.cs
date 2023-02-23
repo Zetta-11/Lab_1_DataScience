@@ -29,5 +29,25 @@ namespace Lab_1
 
             return Math.Sqrt(sumOfSquares / (list.Count - 1));
         }
+
+        public static double GetSkewness(List<double> list)
+        {
+            double mean = list.Average();
+            double standardDeviation = Math.Sqrt(list.Sum(x => Math.Pow(x - mean, 2)) / (list.Count - 1));
+
+            return list.Sum(x => Math.Pow(x - mean, 3)) / ((list.Count - 1) * Math.Pow(standardDeviation, 3));
+        }
+
+        public static double GetKurtosis(List<double> list)
+        {
+            double mean = list.Average();
+            double variance = list.Sum(x => Math.Pow(x - mean, 2)) / (list.Count - 1.0);
+            double standardDeviation = Math.Sqrt(variance);
+            double temp = (list.Sum(x => Math.Pow(x - mean, 4)) / ((list.Count - 1) * Math.Pow(standardDeviation, 4)) - 3.0)
+                           + 6.0 / (list.Count + 1.0);
+
+            return ((Math.Pow(list.Count, 2) - 1.0) / ((list.Count - 2.0) * (list.Count - 3.0))) * temp;
+
+        }
     }
 }
