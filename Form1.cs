@@ -32,6 +32,7 @@ namespace Lab_1
             Tuple<List<double>, List<double>> tupleXAndYRaw = FileReader.GetAndReadFile();
             TableCreator.AddInfoToMainTable(tupleXAndYRaw, dataGridView1);
             ChartHandler.BuildCorrelationField(tupleXAndYRaw, chart1, "X", "Y");
+
             TableCreator.AddInfoToStatisticCharacteristicsTable(dataGridView2, tupleXAndYRaw.Item1);
             TableCreator.AddInfoToStatisticCharacteristicsTable(dataGridView3, tupleXAndYRaw.Item2);
 

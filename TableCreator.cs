@@ -26,15 +26,31 @@ namespace Lab_1
 
         }
 
+
+
         public static void AddInfoToStatisticCharacteristicsTable(DataGridView dataGrid, List<double> list)
         {
             CreateColumsForStaticCharacteristics(dataGrid);
 
-            dataGrid.Rows.Add("Середнє арифметичне", StatisticCharacteristics.GetAverage(list));
-            dataGrid.Rows.Add("Медіана", StatisticCharacteristics.GetMedian(list));
-            dataGrid.Rows.Add("Середньоквадритчне відхилення", StatisticCharacteristics.GetStandartDeviation(list));
-            dataGrid.Rows.Add("Коефіцієнт асиметрії", StatisticCharacteristics.GetSkewness(list));
-            dataGrid.Rows.Add("Коефіцієнт ексцесу", StatisticCharacteristics.GetKurtosis(list));
+            dataGrid.Rows.Add("Середнє арифметичне", Math.Round(StatisticCharacteristics.GetAverage(list), 4),
+                "[ " + Math.Round(StatisticCharacteristics.GetMeanInterval(list).Item1, 4) + "; "
+                + Math.Round(StatisticCharacteristics.GetMeanInterval(list).Item2, 4) + " ]");
+
+            dataGrid.Rows.Add("Медіана", Math.Round(StatisticCharacteristics.GetMedian(list), 4),
+                "[ " + Math.Round(StatisticCharacteristics.GetMedianInterval(list).Item1, 4) + "; "
+                + Math.Round(StatisticCharacteristics.GetMedianInterval(list).Item2, 4) + " ]");
+
+            dataGrid.Rows.Add("Середньоквадритчне відхилення", Math.Round(StatisticCharacteristics.GetStandartDeviation(list), 4),
+                "[ " + Math.Round(StatisticCharacteristics.GetStandartDeviationInterval(list).Item1, 4) + "; "
+                + Math.Round(StatisticCharacteristics.GetStandartDeviationInterval(list).Item2, 4) + " ]");
+
+            dataGrid.Rows.Add("Коефіцієнт асиметрії", Math.Round(StatisticCharacteristics.GetSkewness(list), 4),
+                "[ " + Math.Round(StatisticCharacteristics.GetSkewnewssInterval(list).Item1, 4) + "; "
+                + Math.Round(StatisticCharacteristics.GetSkewnewssInterval(list).Item2, 4) + " ]");
+
+            dataGrid.Rows.Add("Коефіцієнт ексцесу", Math.Round(StatisticCharacteristics.GetKurtosis(list), 4),
+                "[ " + Math.Round(StatisticCharacteristics.GetKurtosisInterval(list).Item1, 4) + "; "
+                + Math.Round(StatisticCharacteristics.GetKurtosisInterval(list).Item2, 4) + " ]");
         }
 
 
