@@ -26,7 +26,18 @@ namespace Lab_1
 
         }
 
-
+        private static void CreateColumnsForCorrelationTable(DataGridView dataGrid)
+        {
+            ClearRowsAndColums(dataGrid);
+            dataGrid.Columns.Add("name", "Коефіцієнт кореляції");
+            dataGrid.Columns.Add("grade", "Оцінка");
+            dataGrid.Columns.Add("interval", "Довірчий інтервал");
+            dataGrid.Columns.Add("interval", "Статистика");
+            dataGrid.Columns.Add("quantil", "Квантиль");
+            dataGrid.Columns.Add("conclusion", "Висновок");
+            dataGrid.Columns.Add("generalConclusion", "Висновок щодо наявності взаємозв'язку");
+            dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
 
         public static void AddInfoToStatisticCharacteristicsTable(DataGridView dataGrid, List<double> list)
         {
@@ -67,10 +78,16 @@ namespace Lab_1
             }
         }
 
+        public static void AddInfoToCorrelationTable(Tuple<List<double>, List<double>> tuple, DataGridView dataGrid)
+        {
+            CreateColumnsForCorrelationTable(dataGrid);
+        }
+
         private static void ClearRowsAndColums(DataGridView dataGrid)
         {
             dataGrid.Columns.Clear();
             dataGrid.Rows.Clear();
+            dataGrid.RowHeadersVisible = false;
         }
     }
 }

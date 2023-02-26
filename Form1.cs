@@ -36,6 +36,8 @@ namespace Lab_1
             TableCreator.AddInfoToStatisticCharacteristicsTable(dataGridView2, tupleXAndYRaw.Item1);
             TableCreator.AddInfoToStatisticCharacteristicsTable(dataGridView3, tupleXAndYRaw.Item2);
 
+            TableCreator.AddInfoToCorrelationTable(tupleXAndYRaw, dataGridView4);
+
         }
     }
 }
