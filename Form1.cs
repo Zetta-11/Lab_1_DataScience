@@ -4,11 +4,11 @@ using System.Windows.Forms;
 
 namespace Lab_1
 {
-    public partial class Form1 : Form
+    public partial class Lab_1 : Form
     {
         readonly Tuple<List<double>, List<double>> tupleXAndYRaw;
 
-        public Form1()
+        public Lab_1()
         {
             InitializeComponent();
         }
