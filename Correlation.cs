@@ -80,12 +80,32 @@ namespace Lab_1
             return Tuple.Create(t, p);
         }
 
-        public static string comparePearsonStats(Tuple<List<double>, List<double>> tuple)
-        {
-            Tuple <double, double> statsAndQUantil = GetPearsonStatsAndQuantil(tuple);
 
-            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ? "Незначуща" : "Значуща";
+        public static Tuple<double, double> GetSpearmanStatsAndQuantil(Tuple<List<double>, List<double>> tuple)
+        {
+            double r = GetSpearmanCoef(tuple);
+
+            double t = (r * Math.Sqrt(tuple.Item1.Count() - 2.0)) / Math.Sqrt(1.0 - r * r);
+            double p = StatisticCharacteristics.studentQuantil(1.0 - 0.05 / 2.0, (double)tuple.Item1.Count - 2.0);
+
+            return Tuple.Create(t, p);
         }
+
+        public static string[] comparePearsonStats(Tuple<List<double>, List<double>> tuple)
+        {
+            Tuple<double, double> statsAndQUantil = GetPearsonStatsAndQuantil(tuple);
+
+            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ? new string[] { "Незначуща", "Нема" } : new string[] { "Значуща", "Є" };
+        }
+
+        public static string[] compareSpearmanStats(Tuple<List<double>, List<double>> tuple)
+        {
+            Tuple<double, double> statsAndQUantil = GetSpearmanStatsAndQuantil(tuple);
+
+            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ? new string[] { "Незначуща", "Нема" } : new string[] { "Значуща", "Є" };
+        }
+
+
 
         public static double GetKerrolCoef(Tuple<List<double>, List<double>> tuple)
         {

@@ -82,14 +82,26 @@ namespace Lab_1
         {
             Tuple<double, double> boundsPearsonInterval = Correlation.GetPearsonInterval(tuple);
             Tuple<double, double> pearsonStatsAndQuantil = Correlation.GetPearsonStatsAndQuantil(tuple);
+            Tuple<double, double> spearmanStatsAndQuantil = Correlation.GetSpearmanStatsAndQuantil(tuple);
 
             CreateColumnsForCorrelationTable(dataGrid);
             dataGrid.Rows.Add("Пірсона", Math.Round(Correlation.GetPearsonCoef(tuple), 4),
                 "[ " + Math.Round(boundsPearsonInterval.Item1, 4) + "; " +
                 Math.Round(boundsPearsonInterval.Item2, 4) + " ]",
-                pearsonStatsAndQuantil.Item1, pearsonStatsAndQuantil.Item2, Correlation.comparePearsonStats(tuple));
+                Math.Round(pearsonStatsAndQuantil.Item1, 4),
+                Math.Round(pearsonStatsAndQuantil.Item2, 4),
+                Correlation.comparePearsonStats(tuple)[0],
+                Correlation.comparePearsonStats(tuple)[1]);
 
-            dataGrid.Rows.Add("Спірмена", Math.Round(Correlation.GetSpearmanCoef(tuple), 4), "-");
+            dataGrid.Rows.Add("Спірмена", Math.Round(Correlation.GetSpearmanCoef(tuple), 4), "-",
+                Math.Round(spearmanStatsAndQuantil.Item1, 4),
+                Math.Round(spearmanStatsAndQuantil.Item2, 4),
+                Correlation.compareSpearmanStats(tuple)[0],
+                Correlation.compareSpearmanStats(tuple)[1]);
+
+            dataGrid.Rows.Add("Кендела");
+
+            dataGrid.Rows.Add("Кореляційне відношення");
         }
 
         private static void ClearRowsAndColums(DataGridView dataGrid)
