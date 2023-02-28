@@ -54,5 +54,35 @@ namespace Lab_1
 
             return (k - difference - aCoef - bCoef) / (Math.Sqrt(k - 2 * aCoef) * Math.Sqrt(k - 2 * bCoef));
         }
+
+        public static Tuple<double, double> GetPearsonInterval(Tuple<List<double>, List<double>> tuple)
+        {
+            double r = GetPearsonCoef(tuple);
+
+            double lowerBound = r + (r * (1.0 - r * r)) / (2.0 * tuple.Item1.Count())
+                - StatisticCharacteristics.normalQuantil(1.0 - 0.05 / 2.0) *
+                (1.0 - r * r) / Math.Sqrt(tuple.Item1.Count() - 1.0);
+
+            double upperBound = r + (r * (1.0 - r * r)) / (2.0 * tuple.Item1.Count())
+                + StatisticCharacteristics.normalQuantil(1.0 - 0.05 / 2.0) *
+                (1.0 - r * r) / Math.Sqrt(tuple.Item1.Count() - 1.0);
+
+            return Tuple.Create(lowerBound, upperBound);
+        }
+
+        public static string GetPearsonCoefEstimate(Tuple<List<double>, List<double>> tuple)
+        {
+            double r = GetPearsonCoef(tuple);
+
+            double t = (r * Math.Sqrt(tuple.Item1.Count() - 2.0)) / Math.Sqrt(1.0 - r * r);
+            double p = 2.0 * (1.0 - StatisticCharacteristics.studentQuantil(Math.Abs(t), ));
+
+
+        }
+
+        public static double GetKerrolCoef(Tuple<List<double>, List<double>> tuple)
+        {
+            return 1;
+        }
     }
 }

@@ -64,8 +64,8 @@ namespace Lab_1
 
         public static Tuple<double, double> GetStandartDeviationInterval(List<double> list)
         {
-            double lowerBoundForRootMeanSquare = GetStandartDeviation(list) - studentQuantil(1.0 - 0.05 / 2.0, list) * GetDevationForRootMeanSquare(list);
-            double upperBoundForRootMeanSquare = GetStandartDeviation(list) + studentQuantil(1.0 - 0.05 / 2.0, list) * GetDevationForRootMeanSquare(list);
+            double lowerBoundForRootMeanSquare = GetStandartDeviation(list) - studentQuantil(1.0 - 0.05 / 2.0, list, list.Count - 1.0) * GetDevationForRootMeanSquare(list);
+            double upperBoundForRootMeanSquare = GetStandartDeviation(list) + studentQuantil(1.0 - 0.05 / 2.0, list, list.Count - 1.0) * GetDevationForRootMeanSquare(list);
 
             return Tuple.Create(lowerBoundForRootMeanSquare, upperBoundForRootMeanSquare);
         }
@@ -85,8 +85,8 @@ namespace Lab_1
 
         public static Tuple<double, double> GetSkewnewssInterval(List<double> list)
         {
-            double lowerBoundForSkewness = GetSkewness(list) - studentQuantil(1.0 - 0.05 / 2.0, list) * GetSkewnessDevation(list);
-            double upperBoundForSkewness = GetSkewness(list) + studentQuantil(1.0 - 0.05 / 2.0, list) * GetSkewnessDevation(list);
+            double lowerBoundForSkewness = GetSkewness(list) - studentQuantil(1.0 - 0.05 / 2.0, list, list.Count - 1.0) * GetSkewnessDevation(list);
+            double upperBoundForSkewness = GetSkewness(list) + studentQuantil(1.0 - 0.05 / 2.0, list, list.Count - 1.0) * GetSkewnessDevation(list);
 
             return Tuple.Create(lowerBoundForSkewness, upperBoundForSkewness);
         }
@@ -108,15 +108,14 @@ namespace Lab_1
             double standartDevationForKurtosis = Math.Sqrt((24.0 * list.Count * (list.Count - 2) * (list.Count - 3)) /
                  ((Math.Pow(list.Count + 1, 2)) * (list.Count + 3) * (list.Count + 5)));
 
-            double lowerBoundForKurtosis = GetKurtosis(list) - studentQuantil(1.0 - 0.05 / 2.0, list) * standartDevationForKurtosis;
-            double upperBoundForKurtosis = GetKurtosis(list) + studentQuantil(1.0 - 0.05 / 2.0, list) * standartDevationForKurtosis;
+            double lowerBoundForKurtosis = GetKurtosis(list) - studentQuantil(1.0 - 0.05 / 2.0, list, list.Count - 1.0) * standartDevationForKurtosis;
+            double upperBoundForKurtosis = GetKurtosis(list) + studentQuantil(1.0 - 0.05 / 2.0, list, list.Count - 1.0) * standartDevationForKurtosis;
 
             return Tuple.Create(lowerBoundForKurtosis, upperBoundForKurtosis);
         }
 
-        public static double studentQuantil(double alpha, List<double> listOfRawData)
+        public static double studentQuantil(double alpha, List<double> listOfRawData, double v)
         {
-            double v = (double)listOfRawData.Count - 1.0;
             return normalQuantil(alpha) + 1.0 / v * g1(alpha) + 1.0 / (v * v) * g2(alpha) + 1.0 / Math.Pow(v, 3) * g3(alpha) + 1.0 / Math.Pow(v, 4) * g4(alpha);
         }
 

@@ -81,6 +81,11 @@ namespace Lab_1
         public static void AddInfoToCorrelationTable(Tuple<List<double>, List<double>> tuple, DataGridView dataGrid)
         {
             CreateColumnsForCorrelationTable(dataGrid);
+            dataGrid.Rows.Add("Пірсона", Math.Round(Correlation.GetPearsonCoef(tuple), 4),
+                "[ " + Math.Round(Correlation.GetPearsonInterval(tuple).Item1, 4) + "; " +
+                Math.Round(Correlation.GetPearsonInterval(tuple).Item2, 4) + " ]");
+
+            dataGrid.Rows.Add("Спірмена", Math.Round(Correlation.GetSpearmanCoef(tuple), 4), "-");
         }
 
         private static void ClearRowsAndColums(DataGridView dataGrid)
