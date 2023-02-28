@@ -80,10 +80,14 @@ namespace Lab_1
 
         public static void AddInfoToCorrelationTable(Tuple<List<double>, List<double>> tuple, DataGridView dataGrid)
         {
+            Tuple<double, double> boundsPearsonInterval = Correlation.GetPearsonInterval(tuple);
+            Tuple<double, double> pearsonStatsAndQuantil = Correlation.GetPearsonStatsAndQuantil(tuple);
+
             CreateColumnsForCorrelationTable(dataGrid);
             dataGrid.Rows.Add("Пірсона", Math.Round(Correlation.GetPearsonCoef(tuple), 4),
-                "[ " + Math.Round(Correlation.GetPearsonInterval(tuple).Item1, 4) + "; " +
-                Math.Round(Correlation.GetPearsonInterval(tuple).Item2, 4) + " ]");
+                "[ " + Math.Round(boundsPearsonInterval.Item1, 4) + "; " +
+                Math.Round(boundsPearsonInterval.Item2, 4) + " ]",
+                pearsonStatsAndQuantil.Item1, pearsonStatsAndQuantil.Item2, Correlation.comparePearsonStats(tuple));
 
             dataGrid.Rows.Add("Спірмена", Math.Round(Correlation.GetSpearmanCoef(tuple), 4), "-");
         }

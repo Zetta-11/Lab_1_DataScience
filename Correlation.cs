@@ -70,14 +70,21 @@ namespace Lab_1
             return Tuple.Create(lowerBound, upperBound);
         }
 
-        public static string GetPearsonCoefEstimate(Tuple<List<double>, List<double>> tuple)
+        public static Tuple<double, double> GetPearsonStatsAndQuantil(Tuple<List<double>, List<double>> tuple)
         {
             double r = GetPearsonCoef(tuple);
 
             double t = (r * Math.Sqrt(tuple.Item1.Count() - 2.0)) / Math.Sqrt(1.0 - r * r);
-            double p = 2.0 * (1.0 - StatisticCharacteristics.studentQuantil(Math.Abs(t), ));
+            double p = StatisticCharacteristics.studentQuantil(1.0 - 0.05 / 2.0, (double)tuple.Item1.Count - 2.0);
 
+            return Tuple.Create(t, p);
+        }
 
+        public static string comparePearsonStats(Tuple<List<double>, List<double>> tuple)
+        {
+            Tuple <double, double> statsAndQUantil = GetPearsonStatsAndQuantil(tuple);
+
+            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ? "Незначуща" : "Значуща";
         }
 
         public static double GetKerrolCoef(Tuple<List<double>, List<double>> tuple)
