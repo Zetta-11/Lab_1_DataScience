@@ -95,17 +95,21 @@ namespace Lab_1
         {
             Tuple<double, double> statsAndQUantil = GetPearsonStatsAndQuantil(tuple);
 
-            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ? new string[] { "Незначуща", "Нема" } : new string[] { "Значуща", "Є" };
+            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ?
+                new string[] { "Незначуща", "Нема" } :
+                new string[] { "Значуща", "Лінійний" };
         }
 
         public static string[] compareSpearmanStats(Tuple<List<double>, List<double>> tuple)
         {
             Tuple<double, double> statsAndQUantil = GetSpearmanStatsAndQuantil(tuple);
 
-            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ? new string[] { "Незначуща", "Нема" } : new string[] { "Значуща", "Є" };
+            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ?
+                new string[] { "Незначуща", "Нема" } :
+                new string[] { "Значуща", "Монотонний" };
         }
 
-        //----------------------------------------------------Kendall--------------------------------------------------------
+        //------------------------------------------------------------Kendall----------------------------------------------------------------------
 
         private static bool CheckToConcondant(Tuple<double, double> p1, Tuple<double, double> p2)
         {
@@ -178,9 +182,115 @@ namespace Lab_1
             tiesDictionary.TryGetValue(0.5, out nx);
             tiesDictionary.TryGetValue(-0.5, out ny);
 
-            double result = (nc - nd) / (Math.Sqrt(nc + nd + nx) * Math.Sqrt(nc + nd + ny));
+            return (nc - nd) / (Math.Sqrt(nc + nd + nx) * Math.Sqrt(nc + nd + ny));
+        }
 
-            return result;
+        public static Tuple<double, double> GetKendallStatsAndQuantil(Tuple<List<double>, List<double>> tuple)
+        {
+            double r = GetKendallCoef(tuple);
+
+            double t = (r * Math.Sqrt(9.0 * tuple.Item1.Count() * (tuple.Item1.Count() - 1.0))) /
+                Math.Sqrt(2.0 * (2.0 * tuple.Item1.Count() + 5.0));
+            double p = StatisticCharacteristics.normalQuantil(1.0 - 0.05 / 2.0);
+
+            return Tuple.Create(t, p);
+        }
+
+        public static string[] compareKendallStats(Tuple<List<double>, List<double>> tuple)
+        {
+            Tuple<double, double> statsAndQUantil = GetKendallStatsAndQuantil(tuple);
+
+            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ?
+                new string[] { "Незначуща", "Нема" } :
+                new string[] { "Значуща", "Монотонний" };
+        }
+
+
+        //-----------------------------------------------------------------CorrelationRatio-------------------------------------------------------------
+
+        public static List<double> TransformList(List<double> list)
+        {
+            double classesQuantity = (int)Math.Ceiling(1.0 + 1.44 * Math.Log(list.Count()));
+            double maxElement = list.Max();
+            double minElement = list.Min();
+            double h = (maxElement - minElement) / classesQuantity;
+
+            double GetClassNumber(double x)
+            {
+                return (x == maxElement ? classesQuantity : (int)Math.Floor((x - minElement) / h + 1));
+            }
+
+            double GetClassByNumber(double cl)
+            {
+                return minElement + cl * h - h / 2;
+            }
+
+            return list.Select(_ => GetClassByNumber(GetClassNumber(_))).ToList();
+        }
+
+        public static double GetCorrelationRatio(Tuple<List<double>, List<double>> tuple)
+        {
+            var points = tuple.Item1
+                .Zip(tuple.Item2, (x, y) =>
+                Tuple.Create(x, y));
+
+            var partiton = points.GroupBy(_ => _.Item1, p => p.Item2);
+            var miidleY = tuple.Item2.Average();
+            var numerator = partiton.Sum(cl => cl.Count() * Math.Pow(cl.Average() - miidleY, 2));
+            var denumenator = tuple.Item2.Sum(_ => Math.Pow(_ - miidleY, 2));
+
+            return Math.Sqrt(numerator / denumenator);
+        }
+
+        public static Tuple<double, double> GetCorrelationRatioStatsAndQuantil(Tuple<List<double>, List<double>> tuple)
+        {
+            double r2 = Math.Pow(GetCorrelationRatio(Tuple.Create(Correlation.TransformList(tuple.Item1), tuple.Item2)), 2);
+            int classesQuantity = (int)Math.Ceiling(1.0 + 1.44 * Math.Log(tuple.Item1.Count()));
+
+            double numerator = r2 / (classesQuantity - 1.0);
+            double denumerator = (1.0 - r2) / (tuple.Item1.Count() - classesQuantity);
+
+            double t = numerator / denumerator;
+            double p = StatisticCharacteristics.FisherQuantil(1.0 - 0.05, classesQuantity - 1.0, tuple.Item1.Count() - classesQuantity);
+
+            return Tuple.Create(t, p);
+        }
+
+        public static string[] compareCorrelationRatioStats(Tuple<List<double>, List<double>> tuple)
+        {
+            Tuple<double, double> statsAndQUantil = GetCorrelationRatioStatsAndQuantil(tuple);
+
+            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ?
+                new string[] { "Незначуща", "Нема" } :
+                new string[] { "Значуща", "Стохастичний" };
+        }
+
+        //-----------------------------------------------------------------AdditionalTable-------------------------------------------------------------
+
+        public static Tuple<double, double> GetAdditionalStatsAndQuantil(Tuple<List<double>, List<double>> tuple)
+        {
+            double r2 = Math.Pow(GetCorrelationRatio(Tuple.Create(TransformList(tuple.Item1), tuple.Item2)), 2);
+            double ps2 = Math.Pow(GetPearsonCoef(Tuple.Create(TransformList(tuple.Item1), tuple.Item2)), 2);
+            int classesQuantity = (int)Math.Ceiling(1.0 + 1.44 * Math.Log(tuple.Item1.Count()));
+
+            double numerator = (r2 - ps2) / (classesQuantity - 2.0);
+            double denumerator = (1.0 - r2) / (tuple.Item1.Count() - classesQuantity);
+
+            double t = numerator / denumerator;
+            double p = StatisticCharacteristics.FisherQuantil(1.0 - 0.05, classesQuantity - 2.0, tuple.Item1.Count() - classesQuantity);
+
+            return Tuple.Create(t, p);
+        }
+
+        public static string[] compareAdditionalStats(Tuple<List<double>, List<double>> tuple)
+        {
+            Tuple<double, double> statsAndQUantil = GetAdditionalStatsAndQuantil(tuple);
+            double r2 = Math.Pow(GetCorrelationRatio(Tuple.Create(Correlation.TransformList(tuple.Item1), tuple.Item2)), 2);
+            double ps2 = Math.Pow(GetPearsonCoef(tuple), 2);
+
+            return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ?
+                new string[] { (r2 == ps2).ToString(), "Лінійний" } :
+                new string[] { (r2 == ps2).ToString(), "Нелінійний" };
         }
     }
 }

@@ -168,5 +168,22 @@ namespace Lab_1
                 / (1.0 + (d1 * t) + (d2 * t * t) + (d3 * t * t * t)));
             }
         }
+
+        public static double FisherQuantil(double p, double v1, double v2)
+        {
+            double u = normalQuantil(p);
+            double s = 1.0 / v1 + 1.0 / v2;
+            double d = 1.0 / v1 - 1.0 / v2;
+
+            double z = u * Math.Sqrt(s / 2) - 1 / 6.0 * d * (u * u + 2)
+                + Math.Sqrt(s / 2) * (s / 24 * (u * u + 3 * u) + 1 / 72.0 * d * d / s * (Math.Pow(u, 3) + 11 * u))
+                - d * s / 120 * (Math.Pow(u, 4) + 9 * u * u + 8)
+                + Math.Pow(d, 3) / 3240 / s * (3 * Math.Pow(u, 4) + 7 * u * u - 16)
+                + Math.Sqrt(s / 2) * (s * s / 1920 * (Math.Pow(u, 5) + 20 * Math.Pow(u, 3) + 15 * u)
+                + Math.Pow(d, 4) / 2880 * (Math.Pow(u, 5) + 44 * Math.Pow(u, 3) + 183 * u)
+                + Math.Pow(d, 4) / 155520 / s / s * (9 * Math.Pow(u, 5) - 284 * Math.Pow(u, 3) - 1513 * u));
+
+            return Math.Exp(2 * z);
+        }
     }
 }

@@ -39,6 +39,19 @@ namespace Lab_1
             dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
+        private static void CreateColumnsForAdditionalTable(DataGridView dataGrid)
+        {
+            ClearRowsAndColums(dataGrid);
+            dataGrid.Columns.Add("name", "Оцінка коеф. Пірсона");
+            dataGrid.Columns.Add("grade", "Оцінка кореляційного відношення");
+            dataGrid.Columns.Add("interval", "Статистика");
+            dataGrid.Columns.Add("quantil", "Квантиль");
+            dataGrid.Columns.Add("conclusion", "Висновок щодо рівності");
+            dataGrid.Columns.Add("generalConclusion", "Висновок щодо виду залежності");
+            dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
+
         public static void AddInfoToStatisticCharacteristicsTable(DataGridView dataGrid, List<double> list)
         {
             CreateColumsForStaticCharacteristics(dataGrid);
@@ -83,6 +96,8 @@ namespace Lab_1
             Tuple<double, double> boundsPearsonInterval = Correlation.GetPearsonInterval(tuple);
             Tuple<double, double> pearsonStatsAndQuantil = Correlation.GetPearsonStatsAndQuantil(tuple);
             Tuple<double, double> spearmanStatsAndQuantil = Correlation.GetSpearmanStatsAndQuantil(tuple);
+            Tuple<double, double> kendallStatsAndQuantil = Correlation.GetKendallStatsAndQuantil(tuple);
+            Tuple<double, double> correlationRatioStatsAndQuantil = Correlation.GetCorrelationRatioStatsAndQuantil(tuple);
 
             CreateColumnsForCorrelationTable(dataGrid);
             dataGrid.Rows.Add("Пірсона", Math.Round(Correlation.GetPearsonCoef(tuple), 4),
@@ -99,9 +114,35 @@ namespace Lab_1
                 Correlation.compareSpearmanStats(tuple)[0],
                 Correlation.compareSpearmanStats(tuple)[1]);
 
-            dataGrid.Rows.Add("Кендела", Math.Round(Correlation.GetKendallCoef(tuple), 4), "-");
+            dataGrid.Rows.Add("Кендела", Math.Round(Correlation.GetKendallCoef(tuple), 4), "-",
+                Math.Round(kendallStatsAndQuantil.Item1, 4),
+                Math.Round(kendallStatsAndQuantil.Item2, 4),
+                Correlation.compareKendallStats(tuple)[0],
+                Correlation.compareKendallStats(tuple)[1]);
 
-            dataGrid.Rows.Add("Кореляційне відношення");
+            dataGrid.Rows.Add("Кореляційне відношення",
+                Math.Round(Correlation.GetCorrelationRatio(Tuple.Create(Correlation.TransformList(tuple.Item1), tuple.Item2)), 4),
+                "-",
+                Math.Round(correlationRatioStatsAndQuantil.Item1, 4),
+                Math.Round(correlationRatioStatsAndQuantil.Item2, 4),
+                Correlation.compareCorrelationRatioStats(tuple)[0],
+                Correlation.compareCorrelationRatioStats(tuple)[1]);
+        }
+
+        public static void AddInfoToAdditionalTable(Tuple<List<double>, List<double>> tuple, DataGridView dataGrid)
+        {
+            CreateColumnsForAdditionalTable(dataGrid);
+
+            if (Correlation.compareCorrelationRatioStats(tuple)[0] == "Значуща")
+            {
+                Tuple<double, double> addTuple = Correlation.GetAdditionalStatsAndQuantil(tuple);
+                dataGrid.Rows.Add(Math.Round(Correlation.GetPearsonCoef(Tuple.Create(Correlation.TransformList(tuple.Item1), tuple.Item2)), 4),
+                    Math.Round(Correlation.GetCorrelationRatio(Tuple.Create(Correlation.TransformList(tuple.Item1), tuple.Item2)), 4),
+                    Math.Round(addTuple.Item1, 4),
+                    Math.Round(addTuple.Item2, 4),
+                    Correlation.compareAdditionalStats(tuple)[0],
+                    Correlation.compareAdditionalStats(tuple)[1]);
+            }
         }
 
         private static void ClearRowsAndColums(DataGridView dataGrid)
