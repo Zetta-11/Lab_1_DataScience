@@ -105,11 +105,82 @@ namespace Lab_1
             return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ? new string[] { "Незначуща", "Нема" } : new string[] { "Значуща", "Є" };
         }
 
+        //----------------------------------------------------Kendall--------------------------------------------------------
 
-
-        public static double GetKerrolCoef(Tuple<List<double>, List<double>> tuple)
+        private static bool CheckToConcondant(Tuple<double, double> p1, Tuple<double, double> p2)
         {
-            return 1;
+            return p1.Item1 > p2.Item1 && p1.Item2 > p2.Item2 || p1.Item1 < p2.Item1 && p1.Item2 < p2.Item2;
+        }
+
+        private static bool CheckToDiscondant(Tuple<double, double> p1, Tuple<double, double> p2)
+        {
+            return p1.Item1 > p2.Item1 && p1.Item2 < p2.Item2 || p1.Item1 < p2.Item1 && p1.Item2 > p2.Item2;
+        }
+
+        private static bool CheckXTies(Tuple<double, double> p1, Tuple<double, double> p2)
+        {
+            return p1.Item1 == p2.Item1;
+        }
+
+        private static bool CheckYTies(Tuple<double, double> p1, Tuple<double, double> p2)
+        {
+            return p1.Item2 == p2.Item2;
+        }
+
+        private static double PointComparator(Tuple<double, double> p1, Tuple<double, double> p2)
+        {
+            if (CheckToConcondant(p1, p2))
+            {
+                return 1;
+            }
+            else if (CheckToDiscondant(p1, p2))
+            {
+                return -1;
+            }
+            else
+            {
+                bool tx = CheckXTies(p1, p2);
+                bool ty = CheckYTies(p1, p2);
+
+                if (tx && ty)
+                {
+                    return 0;
+                }
+                else if (tx)
+                {
+                    return 0.5;
+                }
+                else
+                {
+                    return -0.5;
+                }
+            }
+        }
+
+        public static double GetKendallCoef(Tuple<List<double>, List<double>> tuple)
+        {
+            var points = tuple.Item1
+                .Zip(tuple.Item2, (x, y) =>
+                Tuple.Create(x, y));
+
+            var combinations = points
+                .SelectMany((p1, i) => points
+                .Skip(i + 1)
+                .Select(p2 => (p1, p2)));
+
+            var tiesDictionary = combinations
+                .GroupBy(t => PointComparator(t.p1, t.p2))
+                .ToDictionary(_ => _.Key, _ => _.Count());
+
+            int nc, nd, nx, ny;
+            tiesDictionary.TryGetValue(1, out nc);
+            tiesDictionary.TryGetValue(-1, out nd);
+            tiesDictionary.TryGetValue(0.5, out nx);
+            tiesDictionary.TryGetValue(-0.5, out ny);
+
+            double result = (nc - nd) / (Math.Sqrt(nc + nd + nx) * Math.Sqrt(nc + nd + ny));
+
+            return result;
         }
     }
 }

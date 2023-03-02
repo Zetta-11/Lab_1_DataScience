@@ -99,7 +99,7 @@ namespace Lab_1
                 Correlation.compareSpearmanStats(tuple)[0],
                 Correlation.compareSpearmanStats(tuple)[1]);
 
-            dataGrid.Rows.Add("Кендела");
+            dataGrid.Rows.Add("Кендела", Math.Round(Correlation.GetKendallCoef(tuple), 4), "-");
 
             dataGrid.Rows.Add("Кореляційне відношення");
         }
