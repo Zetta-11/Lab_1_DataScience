@@ -244,7 +244,7 @@ namespace Lab_1
 
         public static Tuple<double, double> GetCorrelationRatioStatsAndQuantil(Tuple<List<double>, List<double>> tuple)
         {
-            double r2 = Math.Pow(GetCorrelationRatio(Tuple.Create(Correlation.TransformList(tuple.Item1), tuple.Item2)), 2);
+            double r2 = Math.Pow(GetCorrelationRatio(Tuple.Create(TransformList(tuple.Item1), tuple.Item2)), 2);
             int classesQuantity = (int)Math.Ceiling(1.0 + 1.44 * Math.Log(tuple.Item1.Count()));
 
             double numerator = r2 / (classesQuantity - 1.0);
@@ -285,7 +285,7 @@ namespace Lab_1
         public static string[] compareAdditionalStats(Tuple<List<double>, List<double>> tuple)
         {
             Tuple<double, double> statsAndQUantil = GetAdditionalStatsAndQuantil(tuple);
-            double r2 = Math.Pow(GetCorrelationRatio(Tuple.Create(Correlation.TransformList(tuple.Item1), tuple.Item2)), 2);
+            double r2 = Math.Pow(GetCorrelationRatio(Tuple.Create(TransformList(tuple.Item1), tuple.Item2)), 2);
             double ps2 = Math.Pow(GetPearsonCoef(tuple), 2);
 
             return Math.Abs(statsAndQUantil.Item1) <= statsAndQUantil.Item2 ?

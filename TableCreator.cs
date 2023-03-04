@@ -51,7 +51,6 @@ namespace Lab_1
             dataGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
-
         public static void AddInfoToStatisticCharacteristicsTable(DataGridView dataGrid, List<double> list)
         {
             CreateColumsForStaticCharacteristics(dataGrid);
@@ -79,6 +78,19 @@ namespace Lab_1
 
 
         public static void AddInfoToMainTable(Tuple<List<double>, List<double>> tupleXAndYRaw, DataGridView dataGrid)
+        {
+            CreateColumsForMainTableData(dataGrid);
+
+            for (int i = 0; i < tupleXAndYRaw.Item1.Count; i++)
+            {
+                dataGrid.Rows.Add();
+                dataGrid.Rows[i].Cells[0].Value = i + 1;
+                dataGrid.Rows[i].Cells[1].Value = tupleXAndYRaw.Item1[i];
+                dataGrid.Rows[i].Cells[2].Value = tupleXAndYRaw.Item2[i];
+            }
+        }
+
+        public static void AddInfoToTable(Tuple<List<double>, List<double>> tupleXAndYRaw, DataGridView dataGrid)
         {
             CreateColumsForMainTableData(dataGrid);
 
